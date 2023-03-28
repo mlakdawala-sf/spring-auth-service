@@ -5,18 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 public interface BaseAuthUser<T> {
+  public T getId();
 
-    public T getId();
+  public void setId(T id);
 
-    public void setId(T id);
+  public String getUsername();
 
-    public String getUsername();
+  public void setUsername(String username);
 
-    public void setUsername(String username) ;
+  public String getPassword();
 
-    public String getPassword();
-
-    public void setPassword(String password);
+  public void setPassword(String password);
 }

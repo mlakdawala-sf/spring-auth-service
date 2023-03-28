@@ -1,10 +1,11 @@
 package com.mudassir.authenticationservice.models;
 
+import java.util.UUID;
+
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -12,16 +13,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name="user_credentials",schema = "main")
-public class UserCredential extends UserModifiableEntity
-{
-    @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
-    private String id;
+@Table(name = "user_credentials", schema = "main")
+public class UserCredential extends UserModifiableEntity {
 
-    private String authProvider;
-    private String authId;
-    private String authToken;
-    private String password;
-    private UUID userId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
+
+  private String authProvider;
+  private String authId;
+  private String authToken;
+  private String password;
+  private UUID userId;
 }

@@ -1,19 +1,19 @@
 package com.mudassir.authenticationservice.enums;
 
 public enum AuthenticateErrorKeys {
-    UserDoesNotExist ("UserDoesNotExist"),
-    PasswordCannotBeChanged ("PasswordCannotBeChangedForExternalUser"),
-    UserInactive ("UserInactive"),
-    TokenRevoked ("TokenRevoked"),
-    TokenMissing ("TokenMissing"),
-    TempPasswordLoginDisallowed ("TempPasswordLoginDisallowed"),
-    PasswordInvalid ("PasswordInvalid"),
-    UnprocessableData ("UnprocessableData"),
-    PasswordExpiryError ("PasswordExpiryError");
-    public final String label;
+  UserDoesNotExist("UserDoesNotExist"),
+  PasswordCannotBeChanged("PasswordCannotBeChangedForExternalUser"),
+  UserInactive("UserInactive"),
+  TokenRevoked("TokenRevoked"),
+  TokenMissing("TokenMissing"),
+  TempPasswordLoginDisallowed("TempPasswordLoginDisallowed"),
+  PasswordInvalid("PasswordInvalid"),
+  UnprocessableData("UnprocessableData"),
+  PasswordExpiryError("PasswordExpiryError");
 
-    private AuthenticateErrorKeys(String label) {
-        this.label = label;
-    }
+  public final String label;
 
+  private AuthenticateErrorKeys(String label) {
+    this.label = label;
+  }
 }

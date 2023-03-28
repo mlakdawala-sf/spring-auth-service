@@ -1,9 +1,9 @@
 package com.mudassir.authenticationservice.repositories;
 
-
-import com.mudassir.authenticationservice.models.Tenant;
 import org.springframework.data.repository.CrudRepository;
 
+import com.mudassir.authenticationservice.models.Tenant;
+
 public interface TenantRepository extends CrudRepository<Tenant, String> {
-    Tenant findByKey(String key);
+  Tenant findByKey(String key);
 }

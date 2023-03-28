@@ -3,52 +3,53 @@ package com.mudassir.authenticationservice.models.base;
 import java.util.Date;
 import java.util.List;
 
-public interface AuthUserWithPermissions<ID , TID, UTID> extends com.mudassir.authenticationservice.models.base.BaseAuthUser<ID> {
+public interface AuthUserWithPermissions<ID, TID, UTID>
+  extends com.mudassir.authenticationservice.models.base.BaseAuthUser<ID> {
+  public ID getIdentifier();
 
-    public ID getIdentifier() ;
+  public void setIdentifier(ID identifier);
 
-    public void setIdentifier(ID identifier);
+  public List<String> getPermissions();
 
-    public List<String> getPermissions();
+  public void setPermissions(List<String> permissions);
 
-    public void setPermissions(List<String> permissions);
+  public int getAuthClientId();
 
-    public int getAuthClientId();
+  public void setAuthClientId(int authClientId);
 
-    public void setAuthClientId(int authClientId);
+  public String getEmail();
 
-    public String getEmail();
+  public void setEmail(String email);
 
-    public void setEmail(String email);
+  public String getRole();
 
-    public String getRole();
+  public void setRole(String role);
 
-    public void setRole(String role);
+  public String getFirstName();
 
-    public String getFirstName();
+  public void setFirstName(String firstName);
 
-    public void setFirstName(String firstName);
-    public String getLastName();
+  public String getLastName();
 
-    public void setLastName(String lastName);
+  public void setLastName(String lastName);
 
-    public String getMiddleName();
+  public String getMiddleName();
 
-    public void setMiddleName(String middleName);
+  public void setMiddleName(String middleName);
 
-    public TID getTenantId();
+  public TID getTenantId();
 
-    public void setTenantId(TID tenantId);
+  public void setTenantId(TID tenantId);
 
-    public UTID getUserTenantId();
+  public UTID getUserTenantId();
 
-    public void setUserTenantId(UTID userTenantId);
+  public void setUserTenantId(UTID userTenantId);
 
-    public Date getPasswordExpiryTime();
+  public Date getPasswordExpiryTime();
 
-    public void setPasswordExpiryTime(Date passwordExpiryTime);
+  public void setPasswordExpiryTime(Date passwordExpiryTime);
 
-    public List<String> getAllowedResources();
+  public List<String> getAllowedResources();
 
-    public void setAllowedResources(List<String> allowedResources);
+  public void setAllowedResources(List<String> allowedResources);
 }

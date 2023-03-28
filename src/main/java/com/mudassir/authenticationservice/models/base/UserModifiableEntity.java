@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModifiableEntity extends com.mudassir.authenticationservice.models.base.BaseEntity {
-    String createdBy;
-    String modifiedBy;
+public class UserModifiableEntity
+  extends com.mudassir.authenticationservice.models.base.BaseEntity {
+
+  String createdBy;
+  String modifiedBy;
 }
