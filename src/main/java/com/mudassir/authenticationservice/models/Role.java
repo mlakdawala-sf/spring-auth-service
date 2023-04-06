@@ -2,7 +2,9 @@ package com.mudassir.authenticationservice.models;
 
 import java.util.List;
 import java.util.UUID;
+
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

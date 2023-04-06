@@ -31,23 +31,26 @@ public class KeycloakFacadeService {
     HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<KeycloakAuthResponse> response = restTemplate.postForEntity(
-        url,
-        request,
-        KeycloakAuthResponse.class);
+      url,
+      request,
+      KeycloakAuthResponse.class
+    );
     return response.getBody();
   }
 
   public KeycloakUserDTO getKeycloakUserProfile(String accessToken) {
-    String url = "http://localhost:8080/realms/mlakdawala/protocol/openid-connect/userinfo";
+    String url =
+      "http://localhost:8080/realms/mlakdawala/protocol/openid-connect/userinfo";
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(accessToken);
     HttpEntity request = new HttpEntity(headers);
     ResponseEntity<KeycloakUserDTO> response = restTemplate.exchange(
-        url,
-        HttpMethod.GET,
-        request,
-        KeycloakUserDTO.class);
+      url,
+      HttpMethod.GET,
+      request,
+      KeycloakUserDTO.class
+    );
     return response.getBody();
   }
 }

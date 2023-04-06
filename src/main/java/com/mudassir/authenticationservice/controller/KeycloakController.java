@@ -25,8 +25,9 @@ public class KeycloakController {
   @GetMapping("/login")
   public void keycloak(HttpServletResponse httpServletResponse) {
     httpServletResponse.setHeader(
-        "Location",
-        "http://localhost:8080/realms/mlakdawala/protocol/openid-connect/auth?response_type=code&client_id=sourcefuse&scope=openid&redirect_uri=http://localhost:8081/keycloak/auth-redirect-callback");
+      "Location",
+      "http://localhost:8080/realms/mlakdawala/protocol/openid-connect/auth?response_type=code&client_id=sourcefuse&scope=openid&redirect_uri=http://localhost:8081/keycloak/auth-redirect-callback"
+    );
     httpServletResponse.setStatus(302);
   }
 }

@@ -105,8 +105,13 @@
 			<artifactId>keycloak-spring-boot-starter</artifactId>
 			<version>21.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
-<!--		<dependency>-->
+
+		<!--		<dependency>-->
 <!--			<groupId>com.hubspot.maven.plugins</groupId>-->
 <!--			<artifactId>prettier-maven-plugin</artifactId>-->
 <!--			<version>0.19</version>-->

@@ -7,47 +7,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mudassir.authenticationservice.models.AuthClient;
-import com.mudassir.authenticationservice.payload.JWTAuthResponse;
-import com.mudassir.authenticationservice.payload.LoginDto;
-import com.mudassir.authenticationservice.payload.VerificationProvider;
+import com.mudassir.authenticationservice.payload.*;
 import com.mudassir.authenticationservice.providers.ClientPasswordVerifyProvider;
 import com.mudassir.authenticationservice.providers.ResourceOwnerVerifyProvider;
 import com.mudassir.authenticationservice.service.impl.AuthService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-  private AuthService authService;
-  private ClientPasswordVerifyProvider clientPasswordVerifyProvider;
+  private final AuthService authService;
+  private final ClientPasswordVerifyProvider clientPasswordVerifyProvider;
 
-  private ResourceOwnerVerifyProvider resourceOwnerVerifyProvider;
+  private final ResourceOwnerVerifyProvider resourceOwnerVerifyProvider;
 
-  public AuthController(
-      AuthService authService,
-      ClientPasswordVerifyProvider clientPasswordVerifyProvider,
-      ResourceOwnerVerifyProvider resourceOwnerVerifyProvider) {
-    this.authService = authService;
-    this.clientPasswordVerifyProvider = clientPasswordVerifyProvider;
-    this.resourceOwnerVerifyProvider = resourceOwnerVerifyProvider;
+  @PostMapping("/token")
+  public JWTAuthResponse getTokenByCode(@RequestBody AuthTokenRequest authTokenRequest) {
+    return this.authService.getTokenByCode(authTokenRequest);
   }
 
   @PostMapping(value = { "/login", "/signin" })
-  public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto) {
+  public ResponseEntity<CodeResponse> login(@RequestBody LoginDto loginDto) {
     AuthClient client = this.clientPasswordVerifyProvider.value(
         loginDto.getClient_id(),
         loginDto.getClient_secret());
     VerificationProvider verificationProvider = this.resourceOwnerVerifyProvider.value(loginDto);
 
-    String token = authService.login(
+    String code = authService.login(
         loginDto,
         client,
         verificationProvider.getAuthUser());
 
-    JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
-    jwtAuthResponse.setAccessToken(token);
+    CodeResponse codeResponse = new CodeResponse();
+    codeResponse.setCode(code);
 
-    return ResponseEntity.ok(jwtAuthResponse);
+    return ResponseEntity.ok(codeResponse);
   }
   // @PostMapping(value = { "/register", "/signup" })
   // public ResponseEntity<String> register(@RequestBody RegisterDto registerDto)

@@ -36,20 +36,23 @@ public class LoginHelperService {
     // throw new HttpErrors.Unauthorized(AuthErrorKeys.InvalidCredentials);
     // }
     Optional<UserTenant> userTenant = userTenantRepository.findUserTenantByUserId(
-        currentUser.getId());
+      currentUser.getId()
+    );
     UserStatus userStatus = userTenant.get().getStatus();
 
     if (currentUser.getAuthClientIds().size() == 0) {
       // this.logger.error('No allowed auth clients found for this user in DB');
 
       throw new HttpServerErrorException(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-          AuthErrorKeys.ClientUserMissing.label);
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        AuthErrorKeys.ClientUserMissing.label
+      );
     } else if (!StringUtils.hasLength(req.getClient_secret())) {
       // this.logger.error('client secret key missing from request object');
       throw new HttpServerErrorException(
-          HttpStatus.BAD_REQUEST,
-          AuthErrorKeys.ClientSecretMissing.label);
+        HttpStatus.BAD_REQUEST,
+        AuthErrorKeys.ClientSecretMissing.label
+      );
       // sonarignore:start
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } else if (!currentUser.getAuthClientIds().contains(client.getId())) {
@@ -58,8 +61,9 @@ public class LoginHelperService {
       // 'User is not allowed to access client id passed in request',
       // );
       throw new HttpServerErrorException(
-          HttpStatus.UNAUTHORIZED,
-          AuthErrorKeys.ClientInvalid.label);
+        HttpStatus.UNAUTHORIZED,
+        AuthErrorKeys.ClientInvalid.label
+      );
     } else if (userStatus == UserStatus.REGISTERED) {
       // this.logger.error('User is in registered state');
       throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User not active yet");

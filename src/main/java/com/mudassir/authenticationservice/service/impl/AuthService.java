@@ -19,60 +19,62 @@ import com.mudassir.authenticationservice.enums.RoleKey;
 import com.mudassir.authenticationservice.enums.UserStatus;
 import com.mudassir.authenticationservice.exception.CommonRuntimeException;
 import com.mudassir.authenticationservice.models.AuthClient;
+import com.mudassir.authenticationservice.models.JwtTokenRedis;
 import com.mudassir.authenticationservice.models.Role;
 import com.mudassir.authenticationservice.models.Tenant;
 import com.mudassir.authenticationservice.models.User;
 import com.mudassir.authenticationservice.models.UserCredential;
 import com.mudassir.authenticationservice.models.UserTenant;
+import com.mudassir.authenticationservice.payload.AuthTokenRequest;
+import com.mudassir.authenticationservice.payload.JWTAuthResponse;
 import com.mudassir.authenticationservice.payload.LoginDto;
 import com.mudassir.authenticationservice.payload.RegisterDto;
+import com.mudassir.authenticationservice.providers.AuthCodeGeneratorProvider;
 import com.mudassir.authenticationservice.repositories.AuthClientRepository;
+import com.mudassir.authenticationservice.repositories.JwtTokenRedisRepository;
 import com.mudassir.authenticationservice.repositories.RoleRepository;
 import com.mudassir.authenticationservice.repositories.TenantRepository;
 import com.mudassir.authenticationservice.repositories.UserCredentialRepository;
 import com.mudassir.authenticationservice.repositories.UserRepository;
 import com.mudassir.authenticationservice.repositories.UserTenantRepository;
-import com.mudassir.authenticationservice.security.JwtTokenProvider;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Service
 public class AuthService {
 
-  private AuthenticationManager authenticationManager;
-  private UserRepository userRepository;
-  private RoleRepository roleRepository;
-  private TenantRepository tenantRepository;
-  private AuthClientRepository authClientRepository;
-  private PasswordEncoder passwordEncoder;
-  private JwtTokenProvider jwtTokenProvider;
+  private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
+  private final TenantRepository tenantRepository;
+  private final AuthClientRepository authClientRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final UserCredentialRepository userCredentialRepository;
+  private final UserTenantRepository userTenantRepository;
+  private final LoginHelperService loginHelperService;
+  private final AuthCodeGeneratorProvider authCodeGeneratorProvider;
+  private final JwtTokenRedisRepository jwtTokenRedisRepository;
 
-  private UserCredentialRepository userCredentialRepository;
-  private UserTenantRepository userTenantRepository;
-  private LoginHelperService loginHelperService;
-
-  public AuthService(
-      AuthenticationManager authenticationManager,
-      UserRepository userRepository,
-      RoleRepository roleRepository,
-      PasswordEncoder passwordEncoder,
-      JwtTokenProvider jwtTokenProvider,
-      UserCredentialRepository userCredentialRepository,
-      TenantRepository tenantRepository,
-      UserTenantRepository userTenantRepository,
-      LoginHelperService loginHelperService) {
-    this.authenticationManager = authenticationManager;
-    this.userRepository = userRepository;
-    this.roleRepository = roleRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.userCredentialRepository = userCredentialRepository;
-    this.tenantRepository = tenantRepository;
-    this.userTenantRepository = userTenantRepository;
-    this.loginHelperService = loginHelperService;
+  public JWTAuthResponse getTokenByCode(AuthTokenRequest authTokenRequest) {
+    this.authClientRepository.findAuthClientByClientId(authTokenRequest.getClientId())
+        .orElseThrow(() -> new CommonRuntimeException(
+            HttpStatus.UNAUTHORIZED,
+            AuthErrorKeys.ClientInvalid.label));
+    JwtTokenRedis jwtTokenObject = this.jwtTokenRedisRepository.findById(authTokenRequest.getCode())
+        .orElseThrow(() -> new CommonRuntimeException(
+            HttpStatus.UNAUTHORIZED,
+            AuthenticateErrorKeys.TokenRevoked.label));
+    JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+    jwtAuthResponse.setAccessToken(jwtTokenObject.getToken());
+    jwtAuthResponse.setTokenType("Bearer");
+    // jwtAuthResponse.setExpiresIn(jwtTokenObject.getExpiresIn());
+    // jwtAuthResponse.setRefreshToken(jwtTokenObject.getRefreshToken());
+    return jwtAuthResponse;
   }
 
   public String login(LoginDto loginDto, AuthClient authClient, User authUser) {
     this.loginHelperService.verifyClientUserLogin(loginDto, authClient, authUser);
-    String token = jwtTokenProvider.generateToken(authUser);
+    String token = this.authCodeGeneratorProvider.provide(authUser);
 
     return token;
   }
@@ -84,9 +86,9 @@ public class AuthService {
           HttpStatus.BAD_REQUEST,
           "Username is already exists!.");
     }
-
+    Optional<User> userExists = userRepository.findByEmail(registerDto.getAuthId());
     // add check for email exists in database
-    if (userRepository.existsByEmail(registerDto.getUser().getEmail())) {
+    if (userExists.isPresent()) {
       throw new CommonRuntimeException(
           HttpStatus.BAD_REQUEST,
           "Email is already exists!.");
@@ -111,7 +113,7 @@ public class AuthService {
     if (userCreds.isPresent()) {
       throw new CommonRuntimeException(HttpStatus.BAD_REQUEST, "User already exists!.");
     }
-    Optional<User> user = this.userRepository.findUserByUsernameOrEmail(
+    Optional<User> user = this.userRepository.findFirstUserByUsernameOrEmail(
         registerDto.getUser().getUsername().toLowerCase());
     if (user.isPresent()) {
       Optional<UserTenant> userTenant = this.userTenantRepository.findUserBy(user.get().getId(), tenant.get().getId());
@@ -119,15 +121,15 @@ public class AuthService {
         throw new CommonRuntimeException(
             HttpStatus.BAD_REQUEST,
             "User already exists and belongs to this tenant");
+      } else {
+        this.createUserTenantData(
+            registerDto.getUser(),
+            UserStatus.ACTIVE,
+            user.get().getId(),
+            defaultRole.get().getId(),
+            tenant.get().getId());
+        return user.get();
       }
-    } else {
-      this.createUserTenantData(
-          registerDto.getUser(),
-          UserStatus.ACTIVE,
-          user.get().getId(),
-          defaultRole.get().getId(),
-          tenant.get().getId());
-      return user.get();
     }
     ArrayList<AuthClient> authClients = this.authClientRepository.findByAllowedClients(
         defaultRole.get().getAllowedClients());
@@ -162,7 +164,7 @@ public class AuthService {
 
       user = this.userRepository.save(user);
       UserCredential userCredential = new UserCredential();
-
+      userCredential.setUserId(user.getId());
       switch (provider) {
         case KEYCLOAK:
           userCredential.setAuthId(authId);
@@ -186,47 +188,6 @@ public class AuthService {
           "Error while creating user");
     }
     return user;
-    // try {
-    // let creds: UserCredentials;
-    // if (options?.authProvider) {
-    // switch (options.authProvider) {
-    // case 'keycloak': {
-    // creds = new UserCredentials({
-    // authProvider: 'keycloak',
-    // authId: options?.authId,
-    // });
-    // break;
-    // }
-    // case 'internal':
-    // default: {
-    // const password = await bcrypt.hash(
-    // process.env.USER_TEMP_PASSWORD,
-    // saltRounds,
-    // );
-    // creds = new UserCredentials({
-    // authProvider: 'internal',
-    // password,
-    // });
-    // break;
-    // }
-    // }
-    // } else {
-    // const password = await bcrypt.hash(
-    // process.env.USER_TEMP_PASSWORD,
-    // saltRounds,
-    // );
-    // creds = new UserCredentials({
-    // authProvider: 'internal',
-    // password,
-    // });
-    // }
-    // await this.credentials(user.id).create(creds, options);
-    // } catch (err) {
-    // // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    // super.deleteByIdHard(user.id);
-    // throw new HttpErrors.UnprocessableEntity('Error while hashing password');
-    // }
-    // return user;
   }
 
   UserTenant createUserTenantData(
@@ -246,12 +207,7 @@ public class AuthService {
   }
 
   public Optional<User> verifyPassword(String username, String password) {
-    // System.out.println(username);
-    System.out.println("Reached 2");
-    System.out.println(username.toLowerCase());
     Optional<User> user = this.userRepository.findUserByUsername(username.toLowerCase());
-    System.out.println("Reached 3");
-
     if (user.isEmpty() || user.get().getDeleted()) {
       throw new HttpServerErrorException(
           HttpStatus.UNAUTHORIZED,

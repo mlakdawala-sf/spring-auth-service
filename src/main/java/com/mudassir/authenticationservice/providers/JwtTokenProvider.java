@@ -1,4 +1,4 @@
-package com.mudassir.authenticationservice.security;
+package com.mudassir.authenticationservice.providers;
 
 import java.security.Key;
 import java.util.Date;

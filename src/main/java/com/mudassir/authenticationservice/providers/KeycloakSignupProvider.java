@@ -29,33 +29,30 @@ public class KeycloakSignupProvider {
   private final RoleRepository roleRepository;
 
   public Optional<User> provide(KeycloakUserDTO keycloakUserDTO) {
-    //           const allowedDomains = process.env.AUTO_SIGNUP_DOMAINS ?? '*';
-    //        if (allowedDomains !== '*') {
-    //        const allowedDomainList = allowedDomains.split(',');
-    //        const profileDomain = profile.email.split('@')[1];
-    //            if (!allowedDomainList.includes(profileDomain)) {
-    //                this.logger.error('Email domain not allowed for auto sign up !');
-    //                throw new HttpErrors.Unauthorized(AuthErrorKeys.InvalidCredentials);
-    //            }
-    //        }
+    // const allowedDomains = process.env.AUTO_SIGNUP_DOMAINS ?? '*';
+    // if (allowedDomains !== '*') {
+    // const allowedDomainList = allowedDomains.split(',');
+    // const profileDomain = profile.email.split('@')[1];
+    // if (!allowedDomainList.includes(profileDomain)) {
+    // this.logger.error('Email domain not allowed for auto sign up !');
+    // throw new HttpErrors.Unauthorized(AuthErrorKeys.InvalidCredentials);
+    // }
+    // }
     //
-    //      const defaultRole =
-    //                await this.userOpsService.findRoleToAssignForKeycloakUser(profile);
+    // const defaultRole =
+    // await this.userOpsService.findRoleToAssignForKeycloakUser(profile);
     Optional<Tenant> tenant = this.tenantRepository.findByKey("master");
-    Optional<Role> defaultRole =
-      this.roleRepository.findByRoleType(RoleKey.Default.label);
+    Optional<Role> defaultRole = this.roleRepository.findByRoleType(RoleKey.Default.label);
     if (tenant.isEmpty()) {
       throw new HttpServerErrorException(
-        HttpStatus.UNAUTHORIZED,
-        AuthErrorKeys.InvalidCredentials.label
-      );
+          HttpStatus.UNAUTHORIZED,
+          AuthErrorKeys.InvalidCredentials.label);
     }
 
     if (defaultRole.isEmpty()) {
       throw new HttpServerErrorException(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        "Role not found"
-      );
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "Role not found");
     }
     User userToCreate = new User();
     userToCreate.setUsername(keycloakUserDTO.getPreferred_username());
@@ -66,7 +63,7 @@ public class KeycloakSignupProvider {
     registerDto.setAuthProvider(AuthProvider.KEYCLOAK);
     registerDto.setDefaultTenantId(tenant.get().getId());
     registerDto.setUser(userToCreate);
-    registerDto.setAuthId(keycloakUserDTO.getSub());
+    registerDto.setAuthId(keycloakUserDTO.getPreferred_username());
     registerDto.setRoleId(defaultRole.get().getId());
 
     return Optional.ofNullable(this.authService.register(registerDto));

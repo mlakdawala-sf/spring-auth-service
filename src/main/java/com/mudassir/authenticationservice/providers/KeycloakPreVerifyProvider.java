@@ -26,25 +26,30 @@ public class KeycloakPreVerifyProvider {
   private final UserCredentialRepository userCredentialRepository;
 
   public Optional<User> provide(
-      Optional<User> optionalUser,
-      KeycloakUserDTO keycloakUserDTO) {
+    Optional<User> optionalUser,
+    KeycloakUserDTO keycloakUserDTO
+  ) {
     if (optionalUser.isEmpty()) {
       return optionalUser;
     }
     User user = optionalUser.get();
-    if (user.getFirstName() != keycloakUserDTO.getGiven_name() ||
-        user.getLastName() != keycloakUserDTO.getFamily_name() ||
-        user.getUsername() != keycloakUserDTO.getPreferred_username()) {
+    if (
+      user.getFirstName() != keycloakUserDTO.getGiven_name() ||
+      user.getLastName() != keycloakUserDTO.getFamily_name() ||
+      user.getUsername() != keycloakUserDTO.getPreferred_username()
+    ) {
       user.setUsername(keycloakUserDTO.getPreferred_username());
       user.setFirstName(keycloakUserDTO.getGiven_name());
       user.setLastName(keycloakUserDTO.getFamily_name());
       this.userRepository.save(user);
     }
-    Optional<UserTenant> userTenant = this.userTenantRepository.findUserTenantByUserId(user.getId());
+    Optional<UserTenant> userTenant =
+      this.userTenantRepository.findUserTenantByUserId(user.getId());
     if (userTenant.isEmpty()) {
       throw new HttpServerErrorException(
-          HttpStatus.UNAUTHORIZED,
-          AuthErrorKeys.InvalidCredentials.label);
+        HttpStatus.UNAUTHORIZED,
+        AuthErrorKeys.InvalidCredentials.label
+      );
     }
     // role assignment pending to be updated
     if (userTenant.get().getStatus() == UserStatus.REGISTERED) {
