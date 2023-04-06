@@ -10,5 +10,5 @@ import com.mudassir.authenticationservice.models.Role;
 public interface RoleRepository extends CrudRepository<Role, UUID> {
   Optional<Role> findByName(String name);
 
-  Role findByRoleType(int roleType);
+  Optional<Role> findByRoleType(int roleType);
 }

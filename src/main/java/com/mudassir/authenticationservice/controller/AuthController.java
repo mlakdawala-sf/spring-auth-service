@@ -1,6 +1,5 @@
 package com.mudassir.authenticationservice.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,11 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mudassir.authenticationservice.models.AuthClient;
 import com.mudassir.authenticationservice.payload.JWTAuthResponse;
 import com.mudassir.authenticationservice.payload.LoginDto;
-import com.mudassir.authenticationservice.payload.RegisterDto;
 import com.mudassir.authenticationservice.payload.VerificationProvider;
 import com.mudassir.authenticationservice.providers.ClientPasswordVerifyProvider;
 import com.mudassir.authenticationservice.providers.ResourceOwnerVerifyProvider;
-import com.mudassir.authenticationservice.service.AuthService;
+import com.mudassir.authenticationservice.service.impl.AuthService;
 
 @RestController
 @RequestMapping("/auth")
@@ -51,10 +49,10 @@ public class AuthController {
 
     return ResponseEntity.ok(jwtAuthResponse);
   }
-
-  @PostMapping(value = { "/register", "/signup" })
-  public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-    String response = authService.register(registerDto);
-    return new ResponseEntity<>(response, HttpStatus.CREATED);
-  }
+  // @PostMapping(value = { "/register", "/signup" })
+  // public ResponseEntity<String> register(@RequestBody RegisterDto registerDto)
+  // {
+  // String response = authService.register(registerDto);
+  // return new ResponseEntity<>(response, HttpStatus.CREATED);
+  // }
 }

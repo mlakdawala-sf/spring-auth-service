@@ -9,4 +9,9 @@ import com.mudassir.authenticationservice.models.UserCredential;
 
 public interface UserCredentialRepository extends CrudRepository<UserCredential, String> {
   Optional<UserCredential> findByUserId(UUID userId);
+
+  Optional<UserCredential> findByAuthIdAndAuthProvider(
+    String authId,
+    String authProvider
+  );
 }

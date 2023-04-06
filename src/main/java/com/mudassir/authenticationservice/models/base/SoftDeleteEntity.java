@@ -2,7 +2,7 @@ package com.mudassir.authenticationservice.models.base;
 
 import java.util.Date;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SoftDeleteEntity {
 
-  Boolean deleted;
-  Date deletedOn;
-  String deletedBy;
+  @Column(columnDefinition = "boolean default false", nullable = true)
+  private Boolean deleted = false;
+
+  private Date deletedOn;
+  private String deletedBy;
 }

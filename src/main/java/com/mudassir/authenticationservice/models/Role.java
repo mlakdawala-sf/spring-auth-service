@@ -2,11 +2,17 @@ package com.mudassir.authenticationservice.models;
 
 import java.util.List;
 import java.util.UUID;
-
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
-
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +30,5 @@ public class Role extends UserModifiableEntity {
   private String name;
   private int roleType;
   private List<String> permissions;
-  private String allowedClients;
+  private List<String> allowedClients;
 }

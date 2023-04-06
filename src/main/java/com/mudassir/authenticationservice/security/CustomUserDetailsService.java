@@ -29,11 +29,10 @@ public class CustomUserDetailsService implements UserDetailsService {
   private RoleRepository roleRepository;
 
   public CustomUserDetailsService(
-    UserRepository userRepository,
-    UserTenantRepository userTenantRepository,
-    UserCredentialRepository userCredentialRepository,
-    RoleRepository roleRepository
-  ) {
+      UserRepository userRepository,
+      UserTenantRepository userTenantRepository,
+      UserCredentialRepository userCredentialRepository,
+      RoleRepository roleRepository) {
     this.userRepository = userRepository;
     this.userTenantRepository = userTenantRepository;
     this.userCredentialRepository = userCredentialRepository;
@@ -42,33 +41,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String usernameOrEmail)
-    throws UsernameNotFoundException {
+      throws UsernameNotFoundException {
     User user = userRepository
-      .findByEmail(usernameOrEmail)
-      .orElseThrow(() ->
-        new UsernameNotFoundException(
-          "User not found with username or email: " + usernameOrEmail
-        )
-      );
-    UserTenant userTenant = userTenantRepository.findUserTenantByUserId(user.getId());
+        .findUserByUsernameOrEmail(usernameOrEmail)
+        .orElseThrow(() -> new UsernameNotFoundException(
+            "User not found with username or email: " + usernameOrEmail));
+    Optional<UserTenant> userTenant = userTenantRepository.findUserTenantByUserId(
+        user.getId());
     Optional<UserCredential> userCredential = userCredentialRepository.findByUserId(
-      user.getId()
-    );
+        user.getId());
 
     Role role = roleRepository
-      .findById(userTenant.getRoleId())
-      .orElseThrow(() ->
-        new UsernameNotFoundException(
-          "Role not found by role id: " + userTenant.getRoleId()
-        )
-      );
+        .findById(userTenant.get().getRoleId())
+        .orElseThrow(() -> new UsernameNotFoundException(
+            "Role not found by role id: " + userTenant.get().getRoleId()));
     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getName());
     List<GrantedAuthority> listAuthorities = new ArrayList<GrantedAuthority>();
     listAuthorities.add(grantedAuthority);
     return new org.springframework.security.core.userdetails.User(
-      user.getEmail(),
-      userCredential.get().getPassword(),
-      listAuthorities
-    );
+        user.getEmail(),
+        "",
+        listAuthorities);
   }
 }

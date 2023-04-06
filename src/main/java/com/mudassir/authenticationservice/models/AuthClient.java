@@ -17,8 +17,8 @@ import lombok.Setter;
 public class AuthClient extends UserModifiableEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
   private String clientId;
   private String clientSecret;

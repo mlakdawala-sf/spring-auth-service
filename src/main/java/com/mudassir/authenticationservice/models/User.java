@@ -1,14 +1,22 @@
 package com.mudassir.authenticationservice.models;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import com.mudassir.authenticationservice.enums.Gender;
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
-
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -31,7 +39,7 @@ public class User extends UserModifiableEntity {
   private String email;
   private String designation;
   private String phone;
-  private String lastLogin;
+  private Timestamp lastLogin;
   private Gender gender;
   private Date dob;
   private UUID defaultTenantId;

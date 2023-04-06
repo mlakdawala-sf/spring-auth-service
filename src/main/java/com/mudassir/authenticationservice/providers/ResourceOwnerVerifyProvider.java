@@ -19,7 +19,7 @@ import com.mudassir.authenticationservice.payload.VerificationProvider;
 import com.mudassir.authenticationservice.repositories.AuthClientRepository;
 import com.mudassir.authenticationservice.repositories.UserRepository;
 import com.mudassir.authenticationservice.repositories.UserTenantRepository;
-import com.mudassir.authenticationservice.service.AuthService;
+import com.mudassir.authenticationservice.service.impl.AuthService;
 
 @Service
 public class ResourceOwnerVerifyProvider {
@@ -30,11 +30,10 @@ public class ResourceOwnerVerifyProvider {
   private AuthService authService;
 
   public ResourceOwnerVerifyProvider(
-    UserRepository userRepository,
-    UserTenantRepository userTenantRepository,
-    AuthClientRepository authClientRepository,
-    AuthService authService
-  ) {
+      UserRepository userRepository,
+      UserTenantRepository userTenantRepository,
+      AuthClientRepository authClientRepository,
+      AuthService authService) {
     this.userRepository = userRepository;
     this.userTenantRepository = userTenantRepository;
     this.authClientRepository = authClientRepository;
@@ -45,49 +44,41 @@ public class ResourceOwnerVerifyProvider {
     Optional<User> user;
 
     try {
-      user =
-        this.authService.verifyPassword(loginDto.getUsername(), loginDto.getPassword());
+      user = this.authService.verifyPassword(loginDto.getUsername(), loginDto.getPassword());
       System.out.println("Reached 1");
     } catch (Exception error) {
-      //        const otp: Otp = await this.otpRepository.get(username);
-      //            if (!otp || otp.otp !== password) {
-      //                throw new HttpErrors.Unauthorized(AuthErrorKeys.InvalidCredentials);
-      //            }
+      // const otp: Otp = await this.otpRepository.get(username);
+      // if (!otp || otp.otp !== password) {
+      // throw new HttpErrors.Unauthorized(AuthErrorKeys.InvalidCredentials);
+      // }
       System.out.println(error);
 
       user = this.userRepository.findUserByUsername(loginDto.getUsername());
       if (user.isEmpty()) {
         throw new HttpServerErrorException(
-          HttpStatus.UNAUTHORIZED,
-          AuthErrorKeys.InvalidCredentials.label
-        );
+            HttpStatus.UNAUTHORIZED,
+            AuthErrorKeys.InvalidCredentials.label);
       }
     }
-    UserTenant userTenant =
-      this.userTenantRepository.findUserBy(
-          user.get().getId(),
-          user.get().getDefaultTenantId(),
-          Arrays.asList(UserStatus.REJECTED, UserStatus.INACTIVE)
-        );
+    UserTenant userTenant = this.userTenantRepository.findUserBy(
+        user.get().getId(),
+        user.get().getDefaultTenantId(),
+        Arrays.asList(UserStatus.REJECTED, UserStatus.INACTIVE));
     if (userTenant == null) {
       throw new HttpServerErrorException(
-        HttpStatus.UNAUTHORIZED,
-        AuthenticateErrorKeys.UserInactive.label
-      );
+          HttpStatus.UNAUTHORIZED,
+          AuthenticateErrorKeys.UserInactive.label);
     }
 
-    AuthClient client =
-      this.authClientRepository.findAuthClientByClientId(loginDto.getClient_id());
-    if (client == null || user.get().getAuthClientIds().contains(client.getId())) {
+    AuthClient client = this.authClientRepository.findAuthClientByClientId(loginDto.getClient_id());
+    if (!user.get().getAuthClientIds().contains(client.getId())) {
       throw new HttpServerErrorException(
-        HttpStatus.UNAUTHORIZED,
-        AuthErrorKeys.ClientInvalid.label
-      );
+          HttpStatus.UNAUTHORIZED,
+          AuthErrorKeys.ClientInvalid.label);
     } else if (!Objects.equals(client.getClientSecret(), loginDto.getClient_secret())) {
       throw new HttpServerErrorException(
-        HttpStatus.UNAUTHORIZED,
-        AuthErrorKeys.ClientVerificationFailed.label
-      );
+          HttpStatus.UNAUTHORIZED,
+          AuthErrorKeys.ClientVerificationFailed.label);
     }
 
     return new VerificationProvider(client, user.get());

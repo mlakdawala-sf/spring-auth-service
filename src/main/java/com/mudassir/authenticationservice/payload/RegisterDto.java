@@ -1,5 +1,10 @@
 package com.mudassir.authenticationservice.payload;
 
+import java.util.UUID;
+
+import com.mudassir.authenticationservice.enums.AuthProvider;
+import com.mudassir.authenticationservice.models.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterDto {
 
-  private String name;
-  private String username;
-  private String email;
-  private String password;
+  private User user;
+  private UUID defaultTenantId;
+  private UUID roleId;
+  private String authId;
+  private AuthProvider authProvider;
 }
