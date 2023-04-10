@@ -1,18 +1,15 @@
 package com.mudassir.authenticationservice.providers;
 
-import org.springframework.stereotype.Service;
-
 import com.mudassir.authenticationservice.models.AuthClient;
 import com.mudassir.authenticationservice.repositories.AuthClientRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@AllArgsConstructor
 @Service
 public class ClientPasswordVerifyProvider {
 
-  private AuthClientRepository authClientRepository;
-
-  public ClientPasswordVerifyProvider(AuthClientRepository authClientRepository) {
-    this.authClientRepository = authClientRepository;
-  }
+  private final AuthClientRepository authClientRepository;
 
   public AuthClient value(String clientId, String clientSecret) {
     return this.authClientRepository.findAuthClientByClientIdAndClientSecret(

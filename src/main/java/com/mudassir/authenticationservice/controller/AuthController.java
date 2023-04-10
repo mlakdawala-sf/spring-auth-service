@@ -1,18 +1,16 @@
 package com.mudassir.authenticationservice.controller;
 
+import com.mudassir.authenticationservice.models.AuthClient;
+import com.mudassir.authenticationservice.payload.*;
+import com.mudassir.authenticationservice.providers.ClientPasswordVerifyProvider;
+import com.mudassir.authenticationservice.providers.ResourceOwnerVerifyProvider;
+import com.mudassir.authenticationservice.services.AuthService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.mudassir.authenticationservice.models.AuthClient;
-import com.mudassir.authenticationservice.payload.*;
-import com.mudassir.authenticationservice.providers.ClientPasswordVerifyProvider;
-import com.mudassir.authenticationservice.providers.ResourceOwnerVerifyProvider;
-import com.mudassir.authenticationservice.service.impl.AuthService;
-
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
@@ -31,15 +29,15 @@ public class AuthController {
 
   @PostMapping(value = { "/login", "/signin" })
   public ResponseEntity<CodeResponse> login(@RequestBody LoginDto loginDto) {
-    AuthClient client = this.clientPasswordVerifyProvider.value(
-        loginDto.getClient_id(),
-        loginDto.getClient_secret());
-    VerificationProvider verificationProvider = this.resourceOwnerVerifyProvider.value(loginDto);
+    AuthClient client =
+      this.clientPasswordVerifyProvider.value(
+          loginDto.getClient_id(),
+          loginDto.getClient_secret()
+        );
+    UserVerificationDTO userVerificationDTO =
+      this.resourceOwnerVerifyProvider.value(loginDto);
 
-    String code = authService.login(
-        loginDto,
-        client,
-        verificationProvider.getAuthUser());
+    String code = authService.login(loginDto, client, userVerificationDTO.getAuthUser());
 
     CodeResponse codeResponse = new CodeResponse();
     codeResponse.setCode(code);

@@ -2,7 +2,6 @@ package com.mudassir.authenticationservice.payload;
 
 import com.mudassir.authenticationservice.models.AuthClient;
 import com.mudassir.authenticationservice.models.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerificationProvider {
+public class UserVerificationDTO {
 
   private AuthClient authClient;
   private User authUser;

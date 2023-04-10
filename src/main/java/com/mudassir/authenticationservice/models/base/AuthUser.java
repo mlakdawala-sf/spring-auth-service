@@ -1,12 +1,10 @@
 package com.mudassir.authenticationservice.models.base;
 
+import com.mudassir.authenticationservice.enums.UserStatus;
+import com.mudassir.authenticationservice.models.User;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import com.mudassir.authenticationservice.enums.UserStatus;
-import com.mudassir.authenticationservice.models.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,6 @@
 package com.mudassir.authenticationservice.models;
 
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

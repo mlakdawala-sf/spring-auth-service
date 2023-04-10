@@ -1,15 +1,7 @@
 package com.mudassir.authenticationservice.providers;
 
-import java.security.Key;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
 import com.mudassir.authenticationservice.exception.CommonRuntimeException;
 import com.mudassir.authenticationservice.models.User;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +9,11 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
@@ -36,12 +33,12 @@ public class JwtTokenProvider {
     Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
     String token = Jwts
-        .builder()
-        .setSubject(username)
-        .setIssuedAt(new Date())
-        .setExpiration(expireDate)
-        .signWith(key())
-        .compact();
+      .builder()
+      .setSubject(username)
+      .setIssuedAt(new Date())
+      .setExpiration(expireDate)
+      .signWith(key())
+      .compact();
     return token;
   }
 
@@ -52,11 +49,11 @@ public class JwtTokenProvider {
   // get username from Jwt token
   public String getUsername(String token) {
     Claims claims = Jwts
-        .parserBuilder()
-        .setSigningKey(key())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+      .parserBuilder()
+      .setSigningKey(key())
+      .build()
+      .parseClaimsJws(token)
+      .getBody();
     String username = claims.getSubject();
     return username;
   }
@@ -74,8 +71,9 @@ public class JwtTokenProvider {
       throw new CommonRuntimeException(HttpStatus.BAD_REQUEST, "Unsupported JWT token");
     } catch (IllegalArgumentException ex) {
       throw new CommonRuntimeException(
-          HttpStatus.BAD_REQUEST,
-          "JWT claims string is empty.");
+        HttpStatus.BAD_REQUEST,
+        "JWT claims string is empty."
+      );
     }
   }
 }

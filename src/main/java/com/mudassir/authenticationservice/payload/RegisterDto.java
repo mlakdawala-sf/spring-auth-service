@@ -1,10 +1,8 @@
 package com.mudassir.authenticationservice.payload;
 
-import java.util.UUID;
-
 import com.mudassir.authenticationservice.enums.AuthProvider;
 import com.mudassir.authenticationservice.models.User;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

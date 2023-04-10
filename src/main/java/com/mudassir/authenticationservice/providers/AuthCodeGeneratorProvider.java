@@ -1,12 +1,9 @@
 package com.mudassir.authenticationservice.providers;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.mudassir.authenticationservice.models.User;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service

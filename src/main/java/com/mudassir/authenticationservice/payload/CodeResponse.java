@@ -10,5 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CodeResponse {
-    private String code;
+
+  private String code;
 }

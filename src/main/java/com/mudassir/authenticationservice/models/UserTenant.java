@@ -1,11 +1,9 @@
 package com.mudassir.authenticationservice.models;
 
-import java.util.UUID;
-
 import com.mudassir.authenticationservice.enums.UserStatus;
 import com.mudassir.authenticationservice.models.base.UserModifiableEntity;
-
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.*;
 
 @Data

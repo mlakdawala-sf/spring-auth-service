@@ -1,13 +1,10 @@
 package com.mudassir.authenticationservice.providers;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.mudassir.authenticationservice.models.JwtTokenRedis;
 import com.mudassir.authenticationservice.repositories.JwtTokenRedisRepository;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service

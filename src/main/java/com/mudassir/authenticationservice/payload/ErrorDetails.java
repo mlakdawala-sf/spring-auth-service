@@ -1,7 +1,6 @@
 package com.mudassir.authenticationservice.payload;
 
 import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

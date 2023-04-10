@@ -1,11 +1,5 @@
 package com.mudassir.authenticationservice.providers;
 
-import java.util.Optional;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
-
 import com.mudassir.authenticationservice.enums.AuthErrorKeys;
 import com.mudassir.authenticationservice.enums.UserStatus;
 import com.mudassir.authenticationservice.models.User;
@@ -14,8 +8,11 @@ import com.mudassir.authenticationservice.payload.keycloak.KeycloakUserDTO;
 import com.mudassir.authenticationservice.repositories.UserCredentialRepository;
 import com.mudassir.authenticationservice.repositories.UserRepository;
 import com.mudassir.authenticationservice.repositories.UserTenantRepository;
-
+import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 @AllArgsConstructor
 @Service
@@ -51,7 +48,7 @@ public class KeycloakPreVerifyProvider {
         AuthErrorKeys.InvalidCredentials.label
       );
     }
-    // role assignment pending to be updated
+    // TODO role assignment pending to be updated
     if (userTenant.get().getStatus() == UserStatus.REGISTERED) {
       userTenant.get().setStatus(UserStatus.ACTIVE);
       this.userTenantRepository.save(userTenant.get());

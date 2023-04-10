@@ -1,5 +1,8 @@
 package com.mudassir.authenticationservice.config;
 
+import com.mudassir.authenticationservice.security.JwtAuthenticationEntryPoint;
+import com.mudassir.authenticationservice.security.JwtAuthenticationFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -19,28 +22,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
-import com.mudassir.authenticationservice.security.JwtAuthenticationEntryPoint;
-import com.mudassir.authenticationservice.security.JwtAuthenticationFilter;
-
 @Configuration
 @EnableMethodSecurity
+@AllArgsConstructor
 @EnableRedisRepositories
 public class SecurityConfig {
 
   private JwtAuthenticationEntryPoint authenticationEntryPoint;
   private final KeycloakLogoutHandler keycloakLogoutHandler;
-
-  private JwtAuthenticationFilter authenticationFilter;
-
-  public SecurityConfig(
-    JwtAuthenticationEntryPoint authenticationEntryPoint,
-    JwtAuthenticationFilter authenticationFilter,
-    KeycloakLogoutHandler keycloakLogoutHandler
-  ) {
-    this.authenticationEntryPoint = authenticationEntryPoint;
-    this.authenticationFilter = authenticationFilter;
-    this.keycloakLogoutHandler = keycloakLogoutHandler;
-  }
+  private final JwtAuthenticationFilter authenticationFilter;
 
   @Bean
   public static PasswordEncoder passwordEncoder() {

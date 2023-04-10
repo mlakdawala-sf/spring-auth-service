@@ -1,12 +1,10 @@
 package com.mudassir.authenticationservice.models;
 
+import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.util.UUID;
-
-import org.springframework.data.redis.core.RedisHash;
-
-import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
 @AllArgsConstructor
 @NoArgsConstructor

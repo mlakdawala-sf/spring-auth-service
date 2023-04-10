@@ -1,5 +1,7 @@
-package com.mudassir.authenticationservice.service.impl;
+package com.mudassir.authenticationservice.services;
 
+import com.mudassir.authenticationservice.payload.keycloak.KeycloakAuthResponse;
+import com.mudassir.authenticationservice.payload.keycloak.KeycloakUserDTO;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -9,9 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import com.mudassir.authenticationservice.payload.keycloak.KeycloakAuthResponse;
-import com.mudassir.authenticationservice.payload.keycloak.KeycloakUserDTO;
 
 @Component
 public class KeycloakFacadeService {

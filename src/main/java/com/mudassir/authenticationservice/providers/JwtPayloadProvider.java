@@ -1,8 +1,7 @@
 package com.mudassir.authenticationservice.providers;
 
-import org.springframework.stereotype.Service;
-
 import com.mudassir.authenticationservice.models.User;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtPayloadProvider {
